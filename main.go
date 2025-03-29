@@ -58,6 +58,7 @@ func main() {
 			matches.PATCH("/:id/goals", incrementGoals)
 			matches.PATCH("/:id/yellowcards", incrementYellowCards)
 			matches.PATCH("/:id/redcards", incrementRedCards)
+			matches.PATCH("/:id/extratime", setExtraTime)
 		}
 	}
 
@@ -146,3 +147,16 @@ func incrementYellowCards(c *gin.Context) {
 func incrementRedCards(c *gin.Context) {
 	updateCounter(c, "red_cards")
 }
+
+func setExtraTime(c *gin.Context) {
+	id := c.Param("id")
+	var match Match
+	if result := db.First(&match, id); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Partido no encontrado"})
+		return
+	}
+
+	db.Model(&match).Update("extra_time", true)
+	c.JSON(http.StatusOK, match)
+}
+
