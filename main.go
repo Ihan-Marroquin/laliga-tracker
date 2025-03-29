@@ -56,6 +56,8 @@ func main() {
 			matches.DELETE("/:id", deleteMatch)
 			
 			matches.PATCH("/:id/goals", incrementGoals)
+			matches.PATCH("/:id/yellowcards", incrementYellowCards)
+			matches.PATCH("/:id/redcards", incrementRedCards)
 		}
 	}
 
@@ -135,4 +137,12 @@ func updateCounter(c *gin.Context, field string) {
 
 func incrementGoals(c *gin.Context) {
 	updateCounter(c, "goals")
+}
+
+func incrementYellowCards(c *gin.Context) {
+	updateCounter(c, "yellow_cards")
+}
+
+func incrementRedCards(c *gin.Context) {
+	updateCounter(c, "red_cards")
 }
