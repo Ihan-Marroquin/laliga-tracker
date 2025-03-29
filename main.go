@@ -54,6 +54,8 @@ func main() {
 			matches.POST("", createMatch)
 			matches.PUT("/:id", updateMatch)
 			matches.DELETE("/:id", deleteMatch)
+			
+			matches.PATCH("/:id/goals", incrementGoals)
 		}
 	}
 
@@ -117,4 +119,20 @@ func deleteMatch(c *gin.Context) {
 	id := c.Param("id")
 	db.Delete(&Match{}, id)
 	c.Status(http.StatusNoContent)
+}
+
+func updateCounter(c *gin.Context, field string) {
+	id := c.Param("id")
+	var match Match
+	if result := db.First(&match, id); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Partido no encontrado"})
+		return
+	}
+
+	db.Model(&match).Update(field, gorm.Expr(field + " + ?", 1))
+	c.JSON(http.StatusOK, match)
+}
+
+func incrementGoals(c *gin.Context) {
+	updateCounter(c, "goals")
 }
