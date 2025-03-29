@@ -53,6 +53,7 @@ func main() {
 			matches.GET("/:id", getMatch)
 			matches.POST("", createMatch)
 			matches.PUT("/:id", updateMatch)
+			matches.DELETE("/:id", deleteMatch)
 		}
 	}
 
@@ -110,4 +111,10 @@ func updateMatch(c *gin.Context) {
 
 	db.Model(&match).Updates(updateData)
 	c.JSON(http.StatusOK, match)
+}
+
+func deleteMatch(c *gin.Context) {
+	id := c.Param("id")
+	db.Delete(&Match{}, id)
+	c.Status(http.StatusNoContent)
 }
