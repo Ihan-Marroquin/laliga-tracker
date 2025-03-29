@@ -52,6 +52,7 @@ func main() {
 			matches.GET("", getMatches)
 			matches.GET("/:id", getMatch)
 			matches.POST("", createMatch)
+			matches.PUT("/:id", updateMatch)
 		}
 	}
 
@@ -91,4 +92,22 @@ func createMatch(c *gin.Context) {
 	
 	db.Create(&newMatch)
 	c.JSON(http.StatusCreated, newMatch)
+}
+
+func updateMatch(c *gin.Context) {
+	id := c.Param("id")
+	var match Match
+	if result := db.First(&match, id); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Partido no encontrado"})
+		return
+	}
+
+	var updateData Match
+	if err := c.ShouldBindJSON(&updateData); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	db.Model(&match).Updates(updateData)
+	c.JSON(http.StatusOK, match)
 }
