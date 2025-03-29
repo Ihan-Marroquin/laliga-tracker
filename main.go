@@ -23,7 +23,6 @@ type Match struct {
 var db *gorm.DB
 
 func main() {
-	// Configurar conexión a PostgreSQL
 	dsn := "host=" + getEnv("DB_HOST", "localhost") +
 		" user=" + getEnv("DB_USER", "postgres") +
 		" password=" + getEnv("DB_PASSWORD", "postgres") +
@@ -51,6 +50,7 @@ func main() {
 		matches := api.Group("/matches")
 		{
 			matches.GET("", getMatches)
+			matches.GET("/:id", getMatch)
 		}
 	}
 
@@ -69,4 +69,14 @@ func getMatches(c *gin.Context) {
 	var matches []Match
 	db.Find(&matches)
 	c.JSON(http.StatusOK, matches)
+}
+
+func getMatch(c *gin.Context) {
+	id := c.Param("id")
+	var match Match
+	if result := db.First(&match, id); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Partido no encontrado"})
+		return
+	}
+	c.JSON(http.StatusOK, match)
 }
