@@ -51,6 +51,7 @@ func main() {
 		{
 			matches.GET("", getMatches)
 			matches.GET("/:id", getMatch)
+			matches.POST("", createMatch)
 		}
 	}
 
@@ -79,4 +80,15 @@ func getMatch(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, match)
+}
+
+func createMatch(c *gin.Context) {
+	var newMatch Match
+	if err := c.ShouldBindJSON(&newMatch); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	
+	db.Create(&newMatch)
+	c.JSON(http.StatusCreated, newMatch)
 }
