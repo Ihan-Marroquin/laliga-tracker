@@ -1,0 +1,61 @@
+# Ejemplos de Uso de la API - La Liga Tracker
+
+## Operaciones CRUD
+
+### 1. Obtener todos los partidos
+curl -X GET http://localhost:8080/api/matches
+
+### 2. Crear nuevo partido
+curl -X POST http://localhost:8080/api/matches \
+  -H "Content-Type: application/json" \
+  -d '{
+    "homeTeam": "Real Madrid",
+    "awayTeam": "Barcelona",
+    "matchDate": "2024-05-15"
+  }'
+
+### 3. Obtener un partido por ID (ej: ID=1)
+curl -X GET http://localhost:8080/api/matches/1
+
+### 4. Actualizar un partido (ej: ID=1)
+curl -X PUT http://localhost:8080/api/matches/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "homeTeam": "Atlético Madrid",
+    "awayTeam": "Valencia",
+    "matchDate": "2024-05-16"
+  }'
+
+### 5. Eliminar un partido (ej: ID=1)
+curl -X DELETE http://localhost:8080/api/matches/1
+
+## Operaciones Especiales (PATCH)
+
+### 6. Registrar un gol (ID=1)
+curl -X PATCH http://localhost:8080/api/matches/1/goals
+
+### 7. Registrar tarjeta amarilla (ID=1)
+curl -X PATCH http://localhost:8080/api/matches/1/yellowcards
+
+### 8. Registrar tarjeta roja (ID=1)
+curl -X PATCH http://localhost:8080/api/matches/1/redcards
+
+### 9. Activar tiempo extra (ID=1)
+curl -X PATCH http://localhost:8080/api/matches/1/extratime
+
+## Consultar datos especiales después de operaciones
+curl -X GET http://localhost:8080/api/matches/1
+# Respuesta esperada:
+# {
+#   "id": 1,
+#   "homeTeam": "Atlético Madrid",
+#   "awayTeam": "Valencia",
+#   "matchDate": "2024-05-16",
+#   "goals": 2,
+#   "yellowCards": 3,
+#   "redCards": 1,
+#   "extraTime": true
+# }
+
+## Documentación Interactiva
+Accede a: http://localhost:8080/swagger/index.html
